@@ -107,7 +107,13 @@ class MiniMaxAIPlayer:
         #TODO: Fill this method in and have it return the appropriate value...
         # (See the "AI and Games" slide that shows "MiniMax Implementation (Dispatch)" on Moodle
         #  but combine the idea of depth-limited search with that pseudocode...
-        return 0
+        #NOTES: Is returned value correct?
+        if (depthLimit == 0) or (gState.isTerminal()):
+			return gState.value
+		if (self.myPlayerChar == gState.currentPlayerChar):
+			return getMaxValue(self,gState,depthLimit,alpha,beta)
+		else:
+			return getMinValue(self,gState,depthLimit,alpha,beta)
         
 
     def getMaxValue(self,gState,depthLimit,alpha,beta):
@@ -119,7 +125,13 @@ class MiniMaxAIPlayer:
         #TODO: Fill in this method and have it return the appropriate value
         # Recall that this method will recursively call the getValueOfState method
         #   above to evaluate each of the child/successor nodes.
-        return 0
+        #NOTES: not entirely sure where I'm headed with this. How do we get to the
+        # successor? 
+        maxVal = alpha
+        maxVal = max(maxVal,getMinValue(self.next))
+        if (maxVal > self.getBestAction):
+			self.setBestAction(maxVal)
+        return maxVal
 
     def getMinValue(self,gState,depthLimit,alpha,beta):
         """ returns the MINIMUM value that can be achieved among the successor (child) states
@@ -130,7 +142,12 @@ class MiniMaxAIPlayer:
         #TODO: Fill in this method and have it return the appropriate value
         # Recall that this method will recursively call the getValueOfState method
         #   above to evaluate each of the child/successor nodes.
-        return 0
+        #NOTES: Refer to notes in getMaxValue
+        minVal = beta
+        minVal = min(minVal,getMaxValue(self.next))
+        if (minVal < self.getBestAction):
+			self.setBestAction(minVal)
+        return minVal
 
 
         
