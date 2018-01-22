@@ -104,12 +104,13 @@ class MiniMaxAIPlayer:
             depending on whether gState's current player char is the same as this
             AI player's current player char... and those methods will recursively 
             call this getValueOfState(...) method on their child (successor) states"""
-        if (depthLimit == 0) or (gState.isTerminal(self)):
-            return gState.value
+            #TODO: Figure out issue with estimateValueForPlayer
+        if (depthLimit == 0) or (gState.isTerminal()):
+            return gState.estimateVaueForPlayer(self,gState.currentPlayerChar)
         if (self.myPlayerChar == gState.currentPlayerChar):
-            return getMaxValue(self,gState,depthLimit,alpha,beta)
+            return self.getMaxValue(gState,depthLimit,alpha,beta)
         else:
-            return getMinValue(self,gState,depthLimit,alpha,beta)
+            return self.getMinValue(gState,depthLimit,alpha,beta)
         
 
     def getMaxValue(self,gState,depthLimit,alpha,beta):
@@ -118,9 +119,9 @@ class MiniMaxAIPlayer:
             gState.setBestAction(...) method to store the action that yielded that maximal value.
             
             For greater efficiency, this method uses alpha-beta pruning."""
-        maxVal = alpha
+        maxVal = math.inf
         for successor in gState.getActionsAndSuccessors():
-            maxVal = max(maxVal,getMinValue(successor))      
+            maxVal = max(maxVal,self.getValueOfState(gState,depthLimit-1,alpha,beta))      
             if (maxVal > self.getBestAction):
                 self.setBestAction(maxVal)
         return maxVal
@@ -131,9 +132,9 @@ class MiniMaxAIPlayer:
             gState.setBestAction(...) method to store the action that yielded that minimal value.
             
             For greater efficiency, this method uses alpha-beta pruning."""
-        minVal = beta
+        minVal = -math.inf
         for successor in gState.getActionsAndSuccessors():        
-            minVal = min(minVal,getValueOfState(self,gState,depthLimit,alpha,beta))
+            minVal = min(minVal,self.getValueOfState(gState,depthLimit-1,alpha,beta))
             if (minVal < self.getBestAction):
                 self.setBestAction(minVal)
         return minVal
