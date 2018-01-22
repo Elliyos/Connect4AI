@@ -104,16 +104,12 @@ class MiniMaxAIPlayer:
             depending on whether gState's current player char is the same as this
             AI player's current player char... and those methods will recursively 
             call this getValueOfState(...) method on their child (successor) states"""
-        #TODO: Fill this method in and have it return the appropriate value...
-        # (See the "AI and Games" slide that shows "MiniMax Implementation (Dispatch)" on Moodle
-        #  but combine the idea of depth-limited search with that pseudocode...
-        #NOTES: Is returned value correct?
-        if (depthLimit == 0) or (gState.isTerminal()):
-			return gState.value
-		if (self.myPlayerChar == gState.currentPlayerChar):
-			return getMaxValue(self,gState,depthLimit,alpha,beta)
-		else:
-			return getMinValue(self,gState,depthLimit,alpha,beta)
+        if (depthLimit == 0) or (gState.isTerminal(self)):
+            return gState.value
+        if (self.myPlayerChar == gState.currentPlayerChar):
+            return getMaxValue(self,gState,depthLimit,alpha,beta)
+        else:
+            return getMinValue(self,gState,depthLimit,alpha,beta)
         
 
     def getMaxValue(self,gState,depthLimit,alpha,beta):
@@ -122,15 +118,11 @@ class MiniMaxAIPlayer:
             gState.setBestAction(...) method to store the action that yielded that maximal value.
             
             For greater efficiency, this method uses alpha-beta pruning."""
-        #TODO: Fill in this method and have it return the appropriate value
-        # Recall that this method will recursively call the getValueOfState method
-        #   above to evaluate each of the child/successor nodes.
-        #NOTES: not entirely sure where I'm headed with this. How do we get to the
-        # successor? 
         maxVal = alpha
-        maxVal = max(maxVal,getMinValue(self.next))
-        if (maxVal > self.getBestAction):
-			self.setBestAction(maxVal)
+        for successor in gState.getActionsAndSuccessors():
+            maxVal = max(maxVal,getMinValue(successor))      
+            if (maxVal > self.getBestAction):
+                self.setBestAction(maxVal)
         return maxVal
 
     def getMinValue(self,gState,depthLimit,alpha,beta):
@@ -139,14 +131,11 @@ class MiniMaxAIPlayer:
             gState.setBestAction(...) method to store the action that yielded that minimal value.
             
             For greater efficiency, this method uses alpha-beta pruning."""
-        #TODO: Fill in this method and have it return the appropriate value
-        # Recall that this method will recursively call the getValueOfState method
-        #   above to evaluate each of the child/successor nodes.
-        #NOTES: Refer to notes in getMaxValue
         minVal = beta
-        minVal = min(minVal,getMaxValue(self.next))
-        if (minVal < self.getBestAction):
-			self.setBestAction(minVal)
+        for successor in gState.getActionsAndSuccessors():        
+            minVal = min(minVal,getValueOfState(self,gState,depthLimit,alpha,beta))
+            if (minVal < self.getBestAction):
+                self.setBestAction(minVal)
         return minVal
 
 
