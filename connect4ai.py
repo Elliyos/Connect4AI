@@ -106,7 +106,7 @@ class MiniMaxAIPlayer:
             call this getValueOfState(...) method on their child (successor) states"""
             #TODO: Figure out issue with estimateValueForPlayer
         if (depthLimit == 0) or (gState.isTerminal()):
-            return gState.estimateVaueForPlayer(self,gState.currentPlayerChar)
+            return gState.estimateValueForPlayer(gState.currentPlayerChar)
         if (self.myPlayerChar == gState.currentPlayerChar):
             return self.getMaxValue(gState,depthLimit,alpha,beta)
         else:
@@ -122,8 +122,8 @@ class MiniMaxAIPlayer:
         maxVal = math.inf
         for successor in gState.getActionsAndSuccessors():
             maxVal = max(maxVal,self.getValueOfState(gState,depthLimit-1,alpha,beta))      
-            if (maxVal > self.getBestAction):
-                self.setBestAction(maxVal)
+            if (maxVal > gState.getBestAction()):
+                gState.setBestAction(maxVal)
         return maxVal
 
     def getMinValue(self,gState,depthLimit,alpha,beta):
@@ -135,8 +135,8 @@ class MiniMaxAIPlayer:
         minVal = -math.inf
         for successor in gState.getActionsAndSuccessors():        
             minVal = min(minVal,self.getValueOfState(gState,depthLimit-1,alpha,beta))
-            if (minVal < self.getBestAction):
-                self.setBestAction(minVal)
+            if (minVal < gState.getBestAction()):
+                gState.setBestAction(minVal)
         return minVal
 
 
