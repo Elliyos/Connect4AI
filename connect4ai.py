@@ -64,6 +64,15 @@ class GameState:
             for the given playerChar """
         # TODO: Fill in this this method, and return a more informative value
         #       based on self.grid
+        if self.isTerminal():
+            if self.grid.checkIfPlayerWon(playerChar):
+                return math.inf
+            elif self.grid.checkIfPlayerWon(self.grid.getOpponentChar(playerChar)):
+                return -math.inf
+        else:
+            numThreeStreaks = sum(s.count(playerChar * 3) for s in self.grid.getAllDirectionStrings())
+            numTwoStreaks = sum(s.count(playerChar * 2) for s in self.grid.getAllDirectionStrings())
+
         return 0
 
 
