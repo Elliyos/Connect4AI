@@ -72,8 +72,8 @@ class GameState:
         else:
             numThreeStreaks = sum(s.count(playerChar * 3) for s in self.grid.getAllDirectionStrings())
             numTwoStreaks = sum(s.count(playerChar * 2) for s in self.grid.getAllDirectionStrings())
-
-        return 0
+            total = (numThreeStreaks*3)+(numTwoStreaks*2)
+            return total
 
 
 class RandomAIPlayer:
@@ -129,7 +129,7 @@ class MiniMaxAIPlayer:
             
             For greater efficiency, this method uses alpha-beta pruning."""
         maxVal = math.inf
-        for successor in gState.getActionsAndSuccessors():
+        for action,successor in gState.getActionsAndSuccessors():
             maxVal = max(maxVal,self.getValueOfState(gState,depthLimit-1,alpha,beta))      
             if (maxVal > gState.getBestAction()):
                 gState.setBestAction(maxVal)
@@ -142,7 +142,7 @@ class MiniMaxAIPlayer:
             
             For greater efficiency, this method uses alpha-beta pruning."""
         minVal = -math.inf
-        for successor in gState.getActionsAndSuccessors():        
+        for action,successor in gState.getActionsAndSuccessors():        
             minVal = min(minVal,self.getValueOfState(gState,depthLimit-1,alpha,beta))
             if (minVal < gState.getBestAction()):
                 gState.setBestAction(minVal)
