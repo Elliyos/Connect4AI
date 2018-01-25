@@ -3,6 +3,7 @@
 
 import math # so we can use math.inf and -math.inf (positive and negative infinity)
 import time, random
+import plotly # used to create graph for readme
 
 class GameState:
     """ this class encapsulates both the game play grid and whose turn it is at this state,
@@ -64,16 +65,12 @@ class GameState:
             for the given playerChar """
         # TODO: Fill in this this method, and return a more informative value
         #       based on self.grid
-        if self.isTerminal():
-            if self.grid.checkIfPlayerWon(playerChar):
-                return math.inf
-            elif self.grid.checkIfPlayerWon(self.grid.getOpponentChar(playerChar)):
-                return -math.inf
-        else:
-            numThreeStreaks = sum(s.count(playerChar * 3) for s in self.grid.getAllDirectionStrings())
-            numTwoStreaks = sum(s.count(playerChar * 2) for s in self.grid.getAllDirectionStrings())
-            total = (numThreeStreaks*3)+(numTwoStreaks*2)
-            return total
+        opponentChar = self.grid.getOpponentChar(playerChar)        
+        numThreeStreaks = sum(s.count((playerChar * 3) + " ") for s in self.grid.getAllDirectionStrings())
+        numTwoStreaks = sum(s.count((playerChar * 2) + (" " * 2)) for s in self.grid.getAllDirectionStrings())
+        oppThreeStreaks = sum(s.count((opponentChar * 3) + " ") for s in self.grid.getAllDirectionStrings())
+        oppTwoStreaks = sum(s.count((opponentChar * 2) + (" " * 2)) for s in self.grid.getAllDirectionStrings())
+        return ((numThreeStreaks*3)+(numTwoStreaks*2)) - ((oppThreeStreaks * 4)+(oppTwoStreaks*3))
 
 
 class RandomAIPlayer:
@@ -115,7 +112,7 @@ class MiniMaxAIPlayer:
             call this getValueOfState(...) method on their child (successor) states"""
             #TODO: Figure out issue with estimateValueForPlayer
         if (depthLimit == 0) or (gState.isTerminal()):
-            return gState.estimateValueForPlayer(gState.currentPlayerChar)
+            return gState.estimateValueForPlayer(self.myPlayerChar)
         if (self.myPlayerChar == gState.currentPlayerChar):
             return self.getMaxValue(gState,depthLimit,alpha,beta)
         else:
@@ -128,11 +125,15 @@ class MiniMaxAIPlayer:
             gState.setBestAction(...) method to store the action that yielded that maximal value.
             
             For greater efficiency, this method uses alpha-beta pruning."""
-        maxVal = math.inf
+        maxVal = -math.inf
         for action,successor in gState.getActionsAndSuccessors():
-            maxVal = max(maxVal,self.getValueOfState(gState,depthLimit-1,alpha,beta))      
-            if (maxVal > gState.getBestAction()):
-                gState.setBestAction(maxVal)
+            state = self.getValueOfState(successor,depthLimit-1,alpha,beta)            
+            if maxVal < state:
+                maxVal = state
+                gState.setBestAction(action)
+            if (maxVal >= beta):
+                return maxVal
+            alpha = max(alpha,maxVal)
         return maxVal
 
     def getMinValue(self,gState,depthLimit,alpha,beta):
@@ -141,11 +142,15 @@ class MiniMaxAIPlayer:
             gState.setBestAction(...) method to store the action that yielded that minimal value.
             
             For greater efficiency, this method uses alpha-beta pruning."""
-        minVal = -math.inf
+        minVal = math.inf
         for action,successor in gState.getActionsAndSuccessors():        
-            minVal = min(minVal,self.getValueOfState(gState,depthLimit-1,alpha,beta))
-            if (minVal < gState.getBestAction()):
-                gState.setBestAction(minVal)
+            state = self.getValueOfState(successor,depthLimit-1,alpha,beta)            
+            if state < minVal:
+                minVal = state
+                gState.setBestAction(action)
+            if minVal <= alpha:
+                return minVal
+            beta = min(beta,minVal)
         return minVal
 
 

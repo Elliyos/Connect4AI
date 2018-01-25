@@ -174,6 +174,7 @@ def main():
         print("The game was a draw.")
     print("Total A.I. search nodes created: ", GameState.totalNodesCreated)
     
+    
 if __name__ == '__main__':
     main()
 
