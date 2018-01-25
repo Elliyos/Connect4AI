@@ -3,7 +3,6 @@
 
 import math # so we can use math.inf and -math.inf (positive and negative infinity)
 import time, random
-import plotly # used to create graph for readme
 
 class GameState:
     """ this class encapsulates both the game play grid and whose turn it is at this state,
@@ -63,8 +62,6 @@ class GameState:
         """ returns a heuristic value anywhere between -infinity (certain loss) 
             and +infinity (certain win) estimating how good the state is
             for the given playerChar """
-        # TODO: Fill in this this method, and return a more informative value
-        #       based on self.grid
         opponentChar = self.grid.getOpponentChar(playerChar)        
         numThreeStreaks = sum(s.count((playerChar * 3) + " ") for s in self.grid.getAllDirectionStrings())
         numTwoStreaks = sum(s.count((playerChar * 2) + (" " * 2)) for s in self.grid.getAllDirectionStrings())
@@ -110,7 +107,6 @@ class MiniMaxAIPlayer:
             depending on whether gState's current player char is the same as this
             AI player's current player char... and those methods will recursively 
             call this getValueOfState(...) method on their child (successor) states"""
-            #TODO: Figure out issue with estimateValueForPlayer
         if (depthLimit == 0) or (gState.isTerminal()):
             return gState.estimateValueForPlayer(self.myPlayerChar)
         if (self.myPlayerChar == gState.currentPlayerChar):
